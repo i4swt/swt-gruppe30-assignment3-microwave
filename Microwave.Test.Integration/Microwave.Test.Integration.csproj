@@ -60,7 +60,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Step2.cs" />
     <Compile Include="Step1.cs" />
-    <Compile Include="Step4Maybe.cs" />
+    <Compile Include="Step4.cs" />
+    <Compile Include="Step3.cs" />
+    <Compile Include="Step5.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
