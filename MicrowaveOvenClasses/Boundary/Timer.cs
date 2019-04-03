@@ -19,6 +19,7 @@ namespace MicrowaveOvenClasses.Boundary
             timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimerEvent);
             timer.Interval = 1000; // 1 second intervals
             timer.AutoReset = true;  // Repeatable timer
+            
         }
 
 
