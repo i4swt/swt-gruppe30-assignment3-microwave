@@ -30,18 +30,18 @@ namespace Microwave.Test.Integration
 
         [TestCase(1)]
         [TestCase(50)]
-        [TestCase(100)]
+        [TestCase(700)]
         public void StartCookingWithValidPowerValue_TurnsOnPowerTube_WritesOutPut(int power)
         {
             var cookTime = 10000;
             _cookController.StartCooking(power, cookTime);
 
-            _output.Received(1).OutputLine($"PowerTube works with {power} %");
+            _output.Received(1).OutputLine($"PowerTube works with {power} W");
         }
 
         [TestCase(-1)]
         [TestCase(0)]
-        [TestCase(101)]
+        [TestCase(701)]
         public void StartCookingWithInvalidPowerValue_ThrowsArgumentOutOfRangeException(int power)
         {
             var cookTime = 10000;
