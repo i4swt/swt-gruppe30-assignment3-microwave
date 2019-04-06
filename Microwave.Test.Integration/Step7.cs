@@ -49,17 +49,17 @@ namespace Microwave.Test.Integration
         public void LightOff_OnStartCancelPressedWithStatusSetPower_LogsNothingAsItsNotOn()
         {
 
-            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _userInterface.OnPowerPressed(null, null); /
+            _userInterface.OnStartCancelPressed(null, null); 
             _output.DidNotReceive().OutputLine($"Light is turned off");
         }
 
         [Test]
         public void LightOn_OnStartCancelPressedWithStatusSetTime_LightOn()
         {
-            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
 
 
             _output.Received(1).OutputLine($"Light is turned on");
@@ -68,9 +68,9 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightOff_CancelCookingWithOnStartCancelPressed_TurnsOff()
         {
-            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
             _output.ClearReceivedCalls();
             _userInterface.OnStartCancelPressed(null, null);
             _output.Received(1).OutputLine($"Light is turned off");
@@ -79,7 +79,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightOn_OnDoorOpen_TurnsOn()
         {
-            _userInterface.OnDoorOpened(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnDoorOpened(null, null); 
             _output.Received(1).OutputLine($"Light is turned on");
         }
 
@@ -94,9 +94,9 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightOn_CookingStartedOnDoorOpenStatus_NoLogsAlreadyOn()
         {
-            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
 
             _output.ClearReceivedCalls();
             _userInterface.OnDoorOpened(null, null);
