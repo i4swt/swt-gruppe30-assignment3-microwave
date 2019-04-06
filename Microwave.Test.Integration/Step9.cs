@@ -60,5 +60,30 @@ namespace Microwave.Test.Integration
 
         }
 
+        [Test]
+        public void Timer_StartCookingDesiredAmountOfTime_NotExpiredBeforeTimerIsDone()
+        {
+            _userInterface.OnPowerPressed(null, null);
+            _userInterface.OnTimePressed(null, null);
+            _userInterface.OnStartCancelPressed(null, null);
+            //Sleep 10 seconds. 
+            _output.ClearReceivedCalls();
+            Thread.Sleep(3000);
+            //Expected cook time 1 minut. 
+            _output.DidNotReceive().OutputLine($"PowerTube turned off");
+        }
+
+        [Test]
+        public void Timer_StartCookingDesiredAmountOfTime_TimerExpiredAfter61Seconds()
+        {
+            _userInterface.OnPowerPressed(null, null);
+            _userInterface.OnTimePressed(null, null);
+            _userInterface.OnStartCancelPressed(null, null);
+            //Sleep 10 seconds.
+            _output.ClearReceivedCalls();
+            Thread.Sleep(61000);
+            //Expected cook time 1 minut. 
+            _output.Received(1).OutputLine($"PowerTube turned off");
+        }
     }
 }
