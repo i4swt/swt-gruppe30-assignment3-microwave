@@ -49,7 +49,7 @@ namespace Microwave.Test.Integration
         public void LightOff_OnStartCancelPressedWithStatusSetPower_LogsNothingAsItsNotOn()
         {
 
-            _userInterface.OnPowerPressed(null, null); /
+            _userInterface.OnPowerPressed(null, null); 
             _userInterface.OnStartCancelPressed(null, null); 
             _output.DidNotReceive().OutputLine($"Light is turned off");
         }
