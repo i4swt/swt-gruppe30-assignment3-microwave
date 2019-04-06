@@ -47,9 +47,9 @@ namespace Microwave.Test.Integration
         [Test]
         public void Timer_StartCookingDesiredAmountOfTime()
         {
-            _userInterface.OnPowerPressed(null, null); 
-            _userInterface.OnTimePressed(null, null); 
-            _userInterface.OnStartCancelPressed(null, null);
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
             //Sleep 10 seconds. 
             Thread.Sleep(10000);
             //Expected cook time 1 minut. 
@@ -63,9 +63,9 @@ namespace Microwave.Test.Integration
         [Test]
         public void Timer_StartCookingDesiredAmountOfTime_NotExpiredBeforeTimerIsDone()
         {
-            _userInterface.OnPowerPressed(null, null);
-            _userInterface.OnTimePressed(null, null);
-            _userInterface.OnStartCancelPressed(null, null);
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
             //Sleep 10 seconds. 
             _output.ClearReceivedCalls();
             Thread.Sleep(3000);
@@ -76,9 +76,9 @@ namespace Microwave.Test.Integration
         [Test]
         public void Timer_StartCookingDesiredAmountOfTime_TimerExpiredAfter61Seconds()
         {
-            _userInterface.OnPowerPressed(null, null);
-            _userInterface.OnTimePressed(null, null);
-            _userInterface.OnStartCancelPressed(null, null);
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
             //Sleep 10 seconds.
             _output.ClearReceivedCalls();
             Thread.Sleep(61000);
