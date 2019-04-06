@@ -43,5 +43,21 @@ namespace Microwave.Test.Integration
             _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
             _cookController.UI = _userInterface;
         }
+
+
+        [Test]
+        public void ButtonPress__PowerButton_LogsSomething()
+        {
+            _powerButton.Press();
+            _output.Received().OutputLine(Arg.Any<string>());
+        }
+
+
+        [Test]
+        public void DoorOpen_LogsSomething()
+        {
+            _powerButton.Press();
+            _output.Received().OutputLine(Arg.Any<string>());
+        }
     }
 }
