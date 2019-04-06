@@ -99,5 +99,31 @@ namespace Microwave.Test.Integration
             _output.Received(1).OutputLine($"Display shows: 02:00");
         }
 
+        private void StartCookingAndClearOutput()
+        {
+            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _output.ClearReceivedCalls();
+        }
+
+        [Test]
+        public void CookingStarted_OnStartCancelPressed_PowerTubeoff()
+        {
+            StartCookingAndClearOutput();
+            _userInterface.OnStartCancelPressed(null, null);
+
+            _output.Received(1).OutputLine("PowerTube turned off");
+            
+        }
+
+        [Test]
+        public void CookingStarted_OnStartCancelPressed_DisplayedCleared()
+        {
+            StartCookingAndClearOutput();
+            _userInterface.OnStartCancelPressed(null, null);
+
+            _output.Received(1).OutputLine("Display cleared");
+        }
     }
 }
