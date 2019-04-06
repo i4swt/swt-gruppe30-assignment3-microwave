@@ -43,5 +43,22 @@ namespace Microwave.Test.Integration
             _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
             _cookController.UI = _userInterface;
         }
+
+        [Test]
+        public void Timer_StartCookingDesiredAmountOfTime()
+        {
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null);
+            //Sleep 10 seconds. 
+            Thread.Sleep(10000);
+            //Expected cook time 1 minut. 
+            for (int x = 59; x > 50; x--)
+            {
+                _output.Received(1).OutputLine($"Display shows: 00:{x}");
+            }
+
+        }
+
     }
 }
