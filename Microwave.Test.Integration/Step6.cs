@@ -80,7 +80,6 @@ namespace Microwave.Test.Integration
             _userInterface.OnTimePressed(null, null); //UI state == SETTIME
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
-            var power = 150;
 
             _output.Received(1).OutputLine($"Display shows: 01:00");
         }
@@ -94,7 +93,6 @@ namespace Microwave.Test.Integration
             _userInterface.OnTimePressed(null, null); //UI state == SETTIME
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
-            var power = 150;
 
             _output.Received(1).OutputLine($"Display shows: 02:00");
         }
