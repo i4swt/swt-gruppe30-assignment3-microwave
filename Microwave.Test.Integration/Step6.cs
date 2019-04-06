@@ -44,7 +44,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingStarted_()
+        public void CookingStarted_PowerShowsExpectedValue()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
@@ -53,9 +53,9 @@ namespace Microwave.Test.Integration
             _userInterface.OnTimePressed(null, null); //UI state == SETTIME
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
-            var power = 50;
+            var power = 150;
 
-            _output.Received(1).OutputLine($"PowerTube works with {power} %");
+            _output.Received(1).OutputLine($"PowerTube works with {power} W");
         }
     }
 }
