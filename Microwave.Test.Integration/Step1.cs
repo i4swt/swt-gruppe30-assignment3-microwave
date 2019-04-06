@@ -27,13 +27,13 @@ namespace Microwave.Test.Integration
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
         }
 
-        [TestCase(1100, 10000, 1)]
-        [TestCase(2100, 10000, 2)]
-        public void StartCooking_DisplayUpdatedOnTimerTick(int sleepTime, int cookTime, int numberOfEvents)
+        [TestCase(1100, 10, 1)]
+        [TestCase(2100, 10, 2)]
+        public void StartCooking_DisplayUpdatedOnTimerTick(int sleepTimeMilliSeconds, int cookTimeSeconds, int numberOfEvents)
         {
             var power = 50;
-            _cookController.StartCooking(power, cookTime);
-            Thread.Sleep(sleepTime);
+            _cookController.StartCooking(power, cookTimeSeconds);
+            Thread.Sleep(sleepTimeMilliSeconds);
 
             _display.Received(numberOfEvents).ShowTime(Arg.Any<int>(), Arg.Any<int>());
         }
@@ -42,9 +42,9 @@ namespace Microwave.Test.Integration
         public void CookingIsDone_PowerTubeTurnedOff()
         {
             var power = 50;
-            var cookTime = 1000;
-            _cookController.StartCooking(power, cookTime);
-            Thread.Sleep(cookTime + 100);
+            var cookTimeSeconds = 1;
+            _cookController.StartCooking(power, cookTimeSeconds);
+            Thread.Sleep(1100);
 
             _powerTube.Received(1).TurnOff();
         }

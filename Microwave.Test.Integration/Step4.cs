@@ -30,8 +30,8 @@ namespace Microwave.Test.Integration
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
         }
 
-        [TestCase(1100, 10000, 1, "Display shows: 00:09")]
-        [TestCase(2100, 10000, 1, "Display shows: 00:08")]
+        [TestCase(1100, 10, 1, "Display shows: 00:09")]
+        [TestCase(2100, 10, 1, "Display shows: 00:08")]
         public void OnTimerTick_RemainingTimeIsDisplayed(int sleepTime, int cookTime, int numberOfEvents, string expectedOutput)
         {
             _cookController.StartCooking(50, cookTime);
