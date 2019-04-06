@@ -72,6 +72,19 @@ namespace Microwave.Test.Integration
             _output.Received(1).OutputLine($"Display shows: 01:00");
         }
 
+        [Test]
+        public void CookingStarted_TimerTwoPress_DisplayShowsTwoMinut()
+        {
+            //UI state == ready
+            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+
+            var power = 150;
+
+            _output.Received(1).OutputLine($"Display shows: 02:00");
+        }
 
     }
 }
