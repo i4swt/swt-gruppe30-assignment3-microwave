@@ -123,5 +123,27 @@ namespace Microwave.Test.Integration
 
             _output.Received(1).OutputLine("Display cleared");
         }
+
+        //This test might have to be placed at another point. 
+        [Test]
+        public void CookingStarted_TimerReceivedExpectedTime1Minute()
+        {
+            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+
+            _timer.Received().Start(60);
+        }
+
+        [Test]
+        public void CookingStarted_TimerReceivedExpectedTimeTwoMinutes()
+        {
+            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+
+            _timer.Received().Start(120);
+        }
     }
 }
