@@ -34,7 +34,7 @@ namespace Microwave.Test.Integration
             
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
-            _timer = Substitute.For<ITimer>(); //Stubbed to be able to raise events when needed
+            _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
