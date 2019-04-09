@@ -44,7 +44,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingStarted_PowerShowsExpectedAfterSinglePress()
+        public void CookingStarted_OnPowerPressedActivatedOneTime_PowerLevelIsSetTo50W()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
@@ -57,7 +57,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingStarted_PowerShowsExpectedValueAtBoundary()
+        public void CookingStarted_OnPowerPressedActivatedThreeTimes_PowerLevelIsSetTo150W()
         {
             //Press button until power is 700.
             for (int x = 0; x < 700; x+=50)
@@ -75,40 +75,30 @@ namespace Microwave.Test.Integration
 
 
         [Test]
-        public void CookingStarted_TimerSinglePress_DisplayShowsOneMinut()
+        public void CookingStarted_OmTimePressedActivatedOneTime_DisplayShowsOneMinut()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (1 minute)
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
-
 
             _output.Received(1).OutputLine($"Display shows: 01:00");
         }
 
         [Test]
-        public void CookingStarted_TimerTwoPress_DisplayShowsTwoMinut()
+        public void CookingStarted_OnTimePressedActivatedTwoTimes_DisplayShowsTwoMinutes()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (1 minute)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (2 minutes)
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
-
 
             _output.Received(1).OutputLine($"Display shows: 02:00");
         }
 
-        private void StartCookingAndClearOutput()
-        {
-            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
-            _output.ClearReceivedCalls();
-        }
-
         [Test]
-        public void CookingStarted_OnStartCancelPressed_PowerTubeoff()
+        public void CookingStarted_OnStartCancelPressedActivatedWhileCookingIsStarted_PowerTubeIsTurnedOff()
         {
             StartCookingAndClearOutput();
             _userInterface.OnStartCancelPressed(null, null);
@@ -118,7 +108,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingStarted_OnStartCancelPressed_DisplayedCleared()
+        public void CookingStarted_OnStartCancelPressedActivatedWhileCookingIsStarted_DisplayIsCleared()
         {
             StartCookingAndClearOutput();
             _userInterface.OnStartCancelPressed(null, null);
@@ -128,24 +118,36 @@ namespace Microwave.Test.Integration
 
         //This test might have to be placed at another point. 
         [Test]
-        public void CookingStarted_TimerReceivedExpectedTime1Minute()
+        public void CookingStarted_TimeSetToTwoMinutes_TimerStartedWith60Seconds()
         {
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (1 minute)
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
             _timer.Received().Start(60);
         }
 
         [Test]
-        public void CookingStarted_TimerReceivedExpectedTimeTwoMinutes()
+        public void CookingStarted_TimeSetToTwoMinutes_TimerStartedWith120Seconds()
         {
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (1 minute)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME (2 minutes)
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
             _timer.Received().Start(120);
+        }
+
+        /// <summary>
+        /// Used to start a cooking. This results in _output receiving a number of calls.
+        /// Because we assert on how many times the _output object has received calls, we clear this counter.
+        /// </summary>
+        private void StartCookingAndClearOutput()
+        {
+            _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+            _output.ClearReceivedCalls();
         }
     }
 }
