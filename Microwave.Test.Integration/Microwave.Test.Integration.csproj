@@ -62,9 +62,9 @@
     <Compile Include="Step1.cs" />
     <Compile Include="Step4.cs" />
     <Compile Include="Step3.cs" />
+    <Compile Include="Step12.cs" />
+    <Compile Include="Step11.cs" />
     <Compile Include="Step9.cs" />
-    <Compile Include="Step8.cs" />
-    <Compile Include="Step7.cs" />
     <Compile Include="Step6.cs" />
     <Compile Include="Step5.cs" />
   </ItemGroup>

@@ -112,7 +112,7 @@ namespace Microwave.Test.Integration
         {
             StartCookingAndClearOutput();
             _userInterface.OnStartCancelPressed(null, null);
-
+            
             _output.Received(1).OutputLine("PowerTube turned off");
             
         }

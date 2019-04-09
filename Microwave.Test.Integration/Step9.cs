@@ -27,14 +27,14 @@ namespace Microwave.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _powerButton = new Button();
-            _timeButton = new Button();
-            _startCancelButton = new Button();
-            _door = new Door();
+            _powerButton = Substitute.For<IButton>();
+            _timeButton = Substitute.For<IButton>();
+            _startCancelButton = Substitute.For<IButton>();
+            _door = Substitute.For<IDoor>();
             
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
-            _timer = new Timer(); //Stubbed to be able to raise events when needed
+            _timer = Substitute.For<ITimer>(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
@@ -44,46 +44,63 @@ namespace Microwave.Test.Integration
             _cookController.UI = _userInterface;
         }
 
+        //This is almost redundant as a call transition into some text. No parameters to take into account. 
         [Test]
-        public void Timer_StartCookingDesiredAmountOfTime()
+        public void LightOff_OnStartCancelPressedWithStatusSetPower_LogsNothingAsItsNotOn()
         {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds. 
-            Thread.Sleep(10000);
-            //Expected cook time 1 minut. 
-            for (int x = 59; x > 50; x--)
-            {
-                _output.Received(1).OutputLine($"Display shows: 00:{x}");
-            }
 
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
+            _output.DidNotReceive().OutputLine($"Light is turned off");
         }
 
         [Test]
-        public void Timer_StartCookingDesiredAmountOfTime_NotExpiredBeforeTimerIsDone()
+        public void LightOn_OnStartCancelPressedWithStatusSetTime_LightOn()
         {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds. 
-            _output.ClearReceivedCalls();
-            Thread.Sleep(3000);
-            //Expected cook time 1 minut. 
-            _output.DidNotReceive().OutputLine($"PowerTube turned off");
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
+
+
+            _output.Received(1).OutputLine($"Light is turned on");
         }
 
         [Test]
-        public void Timer_StartCookingDesiredAmountOfTime_TimerExpiredAfter61Seconds()
+        public void LightOff_CancelCookingWithOnStartCancelPressed_TurnsOff()
         {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds.
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
             _output.ClearReceivedCalls();
-            Thread.Sleep(61000);
-            //Expected cook time 1 minut. 
-            _output.Received(1).OutputLine($"PowerTube turned off");
+            _userInterface.OnStartCancelPressed(null, null);
+            _output.Received(1).OutputLine($"Light is turned off");
+        }
+
+        [Test]
+        public void LightOn_OnDoorOpen_TurnsOn()
+        {
+            _userInterface.OnDoorOpened(null, null); 
+            _output.Received(1).OutputLine($"Light is turned on");
+        }
+
+        [Test]
+        public void LightOn_OnDoorOpenStatusPowerSet_TurnsOn()
+        {
+            _userInterface.OnPowerPressed(null, null);
+            _userInterface.OnDoorOpened(null, null); 
+            _output.Received(1).OutputLine($"Light is turned on");
+        }
+
+        [Test]
+        public void LightOn_CookingStartedOnDoorOpenStatus_NoLogsAlreadyOn()
+        {
+            _userInterface.OnPowerPressed(null, null); 
+            _userInterface.OnTimePressed(null, null); 
+            _userInterface.OnStartCancelPressed(null, null); 
+
+            _output.ClearReceivedCalls();
+            _userInterface.OnDoorOpened(null, null);
+            _output.DidNotReceive().OutputLine($"Light is turned on");
         }
     }
 }

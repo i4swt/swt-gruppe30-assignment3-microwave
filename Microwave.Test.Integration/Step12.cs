@@ -10,7 +10,7 @@ using Timer = MicrowaveOvenClasses.Boundary.Timer;
 namespace Microwave.Test.Integration
 {
     [TestFixture]
-    public class Step8
+    public class Step12
     {
         private IButton _powerButton;
         private IButton _timeButton;
@@ -34,7 +34,7 @@ namespace Microwave.Test.Integration
             
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
-            _timer = Substitute.For<ITimer>(); //Stubbed to be able to raise events when needed
+            _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
@@ -44,20 +44,46 @@ namespace Microwave.Test.Integration
             _cookController.UI = _userInterface;
         }
 
-
         [Test]
-        public void ButtonPress__PowerButton_LogsSomething()
+        public void Timer_StartCookingDesiredAmountOfTime()
         {
             _powerButton.Press();
-            _output.Received().OutputLine(Arg.Any<string>());
+            _timeButton.Press();
+            _startCancelButton.Press();
+            //Sleep 10 seconds. 
+            Thread.Sleep(10000);
+            //Expected cook time 1 minut. 
+            for (int x = 59; x > 50; x--)
+            {
+                _output.Received(1).OutputLine($"Display shows: 00:{x}");
+            }
+
         }
 
-
         [Test]
-        public void DoorOpen_LogsSomething()
+        public void Timer_StartCookingDesiredAmountOfTime_NotExpiredBeforeTimerIsDone()
         {
             _powerButton.Press();
-            _output.Received().OutputLine(Arg.Any<string>());
+            _timeButton.Press();
+            _startCancelButton.Press();
+            //Sleep 10 seconds. 
+            _output.ClearReceivedCalls();
+            Thread.Sleep(3000);
+            //Expected cook time 1 minut. 
+            _output.DidNotReceive().OutputLine($"PowerTube turned off");
+        }
+
+        [Test]
+        public void Timer_StartCookingDesiredAmountOfTime_TimerExpiredAfter61Seconds()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            //Sleep 10 seconds.
+            _output.ClearReceivedCalls();
+            Thread.Sleep(61000);
+            //Expected cook time 1 minut. 
+            _output.Received(1).OutputLine($"PowerTube turned off");
         }
     }
 }
