@@ -32,7 +32,7 @@ namespace Microwave.Test.Integration
 
         [TestCase(1100, 10, 1, "Display shows: 00:09")]
         [TestCase(2100, 10, 1, "Display shows: 00:08")]
-        public void OnTimerTick_RemainingTimeIsDisplayed(int sleepTime, int cookTime, int numberOfEvents, string expectedOutput)
+        public void OnTimerTick_CookingInProgress_RemainingTimeIsDisplayed(int sleepTime, int cookTime, int numberOfEvents, string expectedOutput)
         {
             _cookController.StartCooking(50, cookTime);
             Thread.Sleep(sleepTime);
