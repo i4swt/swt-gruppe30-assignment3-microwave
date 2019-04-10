@@ -31,59 +31,39 @@ namespace Microwave.Test.Integration
             _timeButton = new Button();
             _startCancelButton = new Button();
             _door = new Door();
-            
+
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
             _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-            
+
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
+                _cookController);
             _cookController.UI = _userInterface;
         }
 
-        [Test]
-        public void Timer_StartCookingDesiredAmountOfTime()
-        {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds. 
-            Thread.Sleep(10000);
-            //Expected cook time 1 minut. 
-            for (int x = 59; x > 50; x--)
-            {
-                _output.Received(1).OutputLine($"Display shows: 00:{x}");
-            }
 
+        [Test]
+        public void DoorOpen_DoorOpens_LogsSomething()
+        {
+            _door.Open();
+            _output.Received().OutputLine(Arg.Any<string>());
         }
 
         [Test]
-        public void Timer_StartCookingDesiredAmountOfTime_NotExpiredBeforeTimerIsDone()
+        public void DoorClose_DoorClose_LogsSomething()
         {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds. 
-            _output.ClearReceivedCalls();
-            Thread.Sleep(3000);
-            //Expected cook time 1 minut. 
-            _output.DidNotReceive().OutputLine($"PowerTube turned off");
-        }
 
-        [Test]
-        public void Timer_StartCookingDesiredAmountOfTime_TimerExpiredAfter61Seconds()
-        {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            //Sleep 10 seconds.
+            //Set state to validate that door close works
+            _door.Open();
             _output.ClearReceivedCalls();
-            Thread.Sleep(61000);
-            //Expected cook time 1 minut. 
-            _output.Received(1).OutputLine($"PowerTube turned off");
+
+            //Act and assert
+            _door.Close();
+            _output.Received().OutputLine(Arg.Any<string>());
         }
     }
 }

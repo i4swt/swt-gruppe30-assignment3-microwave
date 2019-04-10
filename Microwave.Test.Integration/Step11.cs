@@ -53,11 +53,5 @@ namespace Microwave.Test.Integration
         }
 
 
-        [Test]
-        public void DoorOpen_LogsSomething()
-        {
-            _powerButton.Press();
-            _output.Received().OutputLine(Arg.Any<string>());
-        }
     }
 }
