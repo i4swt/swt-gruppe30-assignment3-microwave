@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading;
-using MicrowaveOvenClasses.Boundary;
+﻿using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
-using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.Test.Integration
 {
@@ -17,7 +14,7 @@ namespace Microwave.Test.Integration
         private IButton _startCancelButton;
         private IDoor _door;
         private ILight _light;
-        private ITimer _timer;
+        private ITimer _timer; //Faked so we won't have to wait a whole minute for the cooking to finish in our test
         private IOutput _output;
         private Display _display;
         private PowerTube _powerTube;
@@ -44,7 +41,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingIsDone_DisplayIsCleared()
+        public void CookingIsDone_CookingInProgress_CookingStoppedAndDisplayIsCleared()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER
@@ -52,7 +49,8 @@ namespace Microwave.Test.Integration
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
             _output.ClearReceivedCalls(); //Clear all previous calls to _output as they are irrelevant for this test
 
-            _timer.Expired += Raise.Event();
+            _timer.Expired += Raise.Event(); //Triggers the call to 'CookingIsDone'
+
             _output.Received(1).OutputLine("Display cleared");
         }
     }
