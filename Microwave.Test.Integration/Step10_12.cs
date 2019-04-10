@@ -10,7 +10,7 @@ using Timer = MicrowaveOvenClasses.Boundary.Timer;
 namespace Microwave.Test.Integration
 {
     [TestFixture]
-    public class Step11
+    public class Step10_12
     {
         private IButton _powerButton;
         private IButton _timeButton;
@@ -30,28 +30,40 @@ namespace Microwave.Test.Integration
             _powerButton = new Button();
             _timeButton = new Button();
             _startCancelButton = new Button();
-            _door = Substitute.For<IDoor>();
-            
+            _door = new Door();
+
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
             _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-            
+
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
+                _cookController);
             _cookController.UI = _userInterface;
         }
 
 
         [Test]
-        public void ButtonPress__PowerButton_LogsSomething()
+        public void Open_WhenDoorOpens_OutputLightTurnsOn()
         {
-            _powerButton.Press();
-            _output.Received().OutputLine(Arg.Any<string>());
+            _door.Open();
+            _output.Received().OutputLine("Light is turned on");
         }
 
+        [Test]
+        public void Close_WhenDoorCloses_OutputLightTurnedOff()
+        {
 
+            //Set state to validate that door close works
+            _door.Open();
+            _output.ClearReceivedCalls();
+
+            //Act and assert
+            _door.Close();
+            _output.Received().OutputLine("Light is turned off");
+        }
     }
 }
