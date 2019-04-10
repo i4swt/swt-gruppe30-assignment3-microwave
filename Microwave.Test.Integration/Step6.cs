@@ -33,28 +33,62 @@ namespace Microwave.Test.Integration
             _door = Substitute.For<IDoor>();
             _light = Substitute.For<ILight>();
             _output = Substitute.For<IOutput>();
-            _timer = Substitute.For<ITimer>(); //Stubbed to be able to raise events when needed
+            _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-            
+
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
+                _cookController);
             _cookController.UI = _userInterface;
         }
 
+        [TestCase(1,50)]
+        [TestCase(2, 100)]
+        [TestCase(5, 250)]
+        [TestCase(10, 500)]
+        [TestCase(14, 700)]
+        [TestCase(15, 50)]
+        public void OnStartCancelPressed_CurrentStateSetTimeAndPowerDifferences_OutputsPowertubeTurnedOn(int pressPowerButtonTimes,
+            int expectedPower)
+        {
+            //UI state == ready
+            for (int x = 0; x < pressPowerButtonTimes; x++)
+            {
+                _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
+            }
+            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _output.ClearReceivedCalls();
+
+            //Act
+            _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
+
+            //Assert
+            _output.Received(1).OutputLine($"PowerTube works with {expectedPower} W");
+        }
+
         [Test]
-        public void CookingStarted_OnPowerPressedActivatedOneTime_PowerLevelIsSetTo50W()
+        public void OnStartCancelPressed_CurrentStateSetTimeAndTimeDifference_OutputsPowertubeTurnedOn()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
             _userInterface.OnTimePressed(null, null); //UI state == SETTIME
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
 
-            var power = 50;
+            //Clear received calls to avoid clutter. 
+            _output.ClearReceivedCalls();
 
-            _output.Received(1).OutputLine($"PowerTube works with {power} W");
+            //Sleep to allow ticks to happen
+            Thread.Sleep(61000);
+            //Timer tick assert
+            for (int timeTickValue = 59; timeTickValue > 0; timeTickValue--)
+            {
+                _output.Received(1).OutputLine($"Display shows: 00:{timeTickValue:D2}");
+            }
         }
+
+        /*
 
         [Test]
         public void CookingStarted_OnPowerPressedActivatedThreeTimes_PowerLevelIsSetTo150W()
@@ -149,5 +183,6 @@ namespace Microwave.Test.Integration
             _userInterface.OnStartCancelPressed(null, null); //UI state == COOKING
             _output.ClearReceivedCalls();
         }
+        */
     }
 }
