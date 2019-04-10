@@ -10,7 +10,7 @@ using Timer = MicrowaveOvenClasses.Boundary.Timer;
 namespace Microwave.Test.Integration
 {
     [TestFixture]
-    public class Step12
+    public class Step7_11
     {
         private IButton _powerButton;
         private IButton _timeButton;
@@ -30,40 +30,51 @@ namespace Microwave.Test.Integration
             _powerButton = new Button();
             _timeButton = new Button();
             _startCancelButton = new Button();
-            _door = new Door();
-
+            _door = Substitute.For<IDoor>();
+            
             _output = Substitute.For<IOutput>();
             _light = new Light(_output);
             _timer = new Timer(); //Stubbed to be able to raise events when needed
 
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-
+            
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
-                _cookController);
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
             _cookController.UI = _userInterface;
         }
 
 
         [Test]
-        public void DoorOpen_DoorOpens_LogsSomething()
+        public void Press__PowerButtonPressed_OutputShows50W()
         {
-            _door.Open();
-            _output.Received().OutputLine(Arg.Any<string>());
+            _powerButton.Press();
+            _output.Received().OutputLine("Display shows: 50 W");
         }
 
         [Test]
-        public void DoorClose_DoorClose_LogsSomething()
+        public void Press__TimeButtonPressedInCurrentStateSetPower_OutputShows1Minut()
         {
-
-            //Set state to validate that door close works
-            _door.Open();
+            _powerButton.Press();
             _output.ClearReceivedCalls();
 
-            //Act and assert
-            _door.Close();
-            _output.Received().OutputLine(Arg.Any<string>());
+            _timeButton.Press();
+            _output.Received().OutputLine("Display shows: 01:00");
         }
+
+        [Test]
+        public void ButtonPress__StartAndCancelButtonPressedInCurrentStateSetTime_LogsSomething()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _output.ClearReceivedCalls();
+
+            _startCancelButton.Press();
+            _output.Received().OutputLine("Light is turned on");
+        }
+
+
+
+
     }
 }
