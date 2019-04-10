@@ -28,38 +28,15 @@ namespace Microwave.Test.Integration
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
         }
 
-        [TestCase(1)]
-        [TestCase(50)]
-        [TestCase(700)]
-        public void StartCookingWithValidPowerValue_TurnsOnPowerTube_WritesOutPut(int power)
+        [TestCase(1)] //boundary value
+        [TestCase(350)]
+        [TestCase(700)] //boundary value
+        public void StartCooking_PowerValueIsValid_PowerTubeIsTurnedOn(int power)
         {
             var cookTime = 10000;
             _cookController.StartCooking(power, cookTime);
 
             _output.Received(1).OutputLine($"PowerTube works with {power} W");
-        }
-
-        [TestCase(-1)]
-        [TestCase(0)]
-        [TestCase(701)]
-        public void StartCookingWithInvalidPowerValue_ThrowsArgumentOutOfRangeException(int power)
-        {
-            var cookTime = 10000;
-
-            Assert.That(() => _cookController.StartCooking(power, cookTime),
-                Throws.TypeOf<ArgumentOutOfRangeException>());
-        }
-
-        [Test]
-        public void StartCookingWhileCookingInProgress_ThrowsApplicationException()
-        {
-            var power = 50;
-            var cookTime = 10000;
-            _cookController.StartCooking(power, cookTime);
-
-            //Start cooking a second time
-            Assert.That(() => _cookController.StartCooking(power, cookTime),
-                Throws.TypeOf<ApplicationException>());
         }
     }
 }
