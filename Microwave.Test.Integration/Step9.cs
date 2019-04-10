@@ -44,63 +44,23 @@ namespace Microwave.Test.Integration
             _cookController.UI = _userInterface;
         }
 
-        //This is almost redundant as a call transition into some text. No parameters to take into account. 
         [Test]
-        public void LightOff_OnStartCancelPressedWithStatusSetPower_LogsNothingAsItsNotOn()
+        public void OnDoorOpened_DoorIsClosed_OutputsLightIsTurnedOn()
         {
-
-            _userInterface.OnPowerPressed(null, null); 
-            _userInterface.OnStartCancelPressed(null, null); 
-            _output.DidNotReceive().OutputLine($"Light is turned off");
-        }
-
-        [Test]
-        public void LightOn_OnStartCancelPressedWithStatusSetTime_LightOn()
-        {
-            _userInterface.OnPowerPressed(null, null); 
-            _userInterface.OnTimePressed(null, null); 
-            _userInterface.OnStartCancelPressed(null, null); 
-
-
+            _userInterface.OnDoorOpened(null, null); 
             _output.Received(1).OutputLine($"Light is turned on");
         }
 
+
         [Test]
-        public void LightOff_CancelCookingWithOnStartCancelPressed_TurnsOff()
+        public void OnDoorClosed_DoorIsOpen_OutputsLightIsTurnedOff()
         {
-            _userInterface.OnPowerPressed(null, null); 
-            _userInterface.OnTimePressed(null, null); 
-            _userInterface.OnStartCancelPressed(null, null); 
+            _userInterface.OnDoorOpened(null, null);
             _output.ClearReceivedCalls();
-            _userInterface.OnStartCancelPressed(null, null);
+
+            _userInterface.OnDoorClosed(null,null);
             _output.Received(1).OutputLine($"Light is turned off");
         }
 
-        [Test]
-        public void LightOn_OnDoorOpen_TurnsOn()
-        {
-            _userInterface.OnDoorOpened(null, null); 
-            _output.Received(1).OutputLine($"Light is turned on");
-        }
-
-        [Test]
-        public void LightOn_OnDoorOpenStatusPowerSet_TurnsOn()
-        {
-            _userInterface.OnPowerPressed(null, null);
-            _userInterface.OnDoorOpened(null, null); 
-            _output.Received(1).OutputLine($"Light is turned on");
-        }
-
-        [Test]
-        public void LightOn_CookingStartedOnDoorOpenStatus_NoLogsAlreadyOn()
-        {
-            _userInterface.OnPowerPressed(null, null); 
-            _userInterface.OnTimePressed(null, null); 
-            _userInterface.OnStartCancelPressed(null, null); 
-
-            _output.ClearReceivedCalls();
-            _userInterface.OnDoorOpened(null, null);
-            _output.DidNotReceive().OutputLine($"Light is turned on");
-        }
     }
 }
