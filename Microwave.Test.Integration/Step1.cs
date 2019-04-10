@@ -29,7 +29,8 @@ namespace Microwave.Test.Integration
 
         [TestCase(1100, 10, 1)]
         [TestCase(2100, 10, 2)]
-        public void StartCooking_DisplayUpdatedOnTimerTick(int sleepTimeMilliSeconds, int cookTimeSeconds, int numberOfEvents)
+        [TestCase(5100, 3, 3)]
+        public void OnTimerEvent_TimeIsRemaining_DisplayIsUpdatedEachSecond(int sleepTimeMilliSeconds, int cookTimeSeconds, int numberOfEvents)
         {
             var power = 50;
             _cookController.StartCooking(power, cookTimeSeconds);
@@ -39,7 +40,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void CookingIsDone_PowerTubeTurnedOff()
+        public void OnTimerEvent_TimerExpires_PowerTubeIsTurnedOff()
         {
             var power = 50;
             var cookTimeSeconds = 1;

@@ -28,7 +28,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void StartCooking_StartsTimer()
+        public void StartCooking_CookingIsStarted_TimerIsStarted()
         {
             var waitHandle = new ManualResetEvent(false);
             _timer.TimerTick += (sender, args) => waitHandle.Set();
@@ -42,7 +42,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void StopCooking_StopsTimer()
+        public void Stop_CookingIsStopped_TimerIsStopped()
         {
             var waitHandle = new ManualResetEvent(false);
             _timer.TimerTick += (sender, args) => waitHandle.Set();
