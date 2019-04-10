@@ -58,7 +58,7 @@ namespace Microwave.Test.Integration
             {
                 _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
             }
-            _userInterface.OnTimePressed(null, null); //UI state == SETTIME
+            _userInterface.OnTimePressed(null, null); 
             _output.ClearReceivedCalls();
 
             //Act
