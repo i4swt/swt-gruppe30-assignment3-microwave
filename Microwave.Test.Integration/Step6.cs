@@ -84,7 +84,7 @@ namespace Microwave.Test.Integration
             _output.ClearReceivedCalls();
 
             //Sleep to allow ticks to happen
-            Thread.Sleep(minutes*60000);
+            Thread.Sleep(minutes*61000);
             //Timer tick assert
             for (int timeTickValue = (minutes*60-1); timeTickValue > 0; timeTickValue--)
             {

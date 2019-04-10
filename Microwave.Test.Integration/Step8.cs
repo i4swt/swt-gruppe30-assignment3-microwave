@@ -66,7 +66,7 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void OnDoorOpened_CurrentStateIsCooking_OutputsDisplayedCleared()
+        public void OnDoorOpened_CurrentStateIsCooking_OutputsPowerTubeTurnedOff()
         {
             //UI state == ready
             _userInterface.OnPowerPressed(null, null); //UI state == SETPOWER, sets power to the first powerlevel (50)
@@ -76,7 +76,7 @@ namespace Microwave.Test.Integration
 
             //Act
             _userInterface.OnDoorOpened(null, null);
-            _output.Received(1).OutputLine($"Display cleared");
+            _output.Received(1).OutputLine($"PowerTube turned off");
         }
     }
 }
